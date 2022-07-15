@@ -6,7 +6,7 @@ pipeline {
     environment {
         imageName = "fleetman-api-gateway"
         registryCredentials = "nexus"
-        registry = "nexus-registry.eastus.cloudapp.azure.com:8086/"
+        registry = "nexus-registry.eastus.cloudapp.azure.com:8085/"
         dockerImage = ''
     }
 
