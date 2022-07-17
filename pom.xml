@@ -8,7 +8,7 @@
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>fleetman</name>
+	<name>fleetman-api-gateway</name>
 	<description>VPP's Fleet Management Application</description>
 
 	<parent>
