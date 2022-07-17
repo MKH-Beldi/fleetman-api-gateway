@@ -62,6 +62,12 @@ pipeline {
                 }
             }
         }
+        stage('Trigger K8S Manifest Update') {
+            steps {
+                build job: 'k8s-update-manifests-fleetman-api-gateway', parameters: [string(name: 'DOCKERTAG', value: commit_id)]
+            }
+
+        }
 
     }
 }
