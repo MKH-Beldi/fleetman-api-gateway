@@ -12,31 +12,39 @@ pipeline {
 
     stages {
 
-         stage('Clean Workspace') {
+        stage('Git operations') {
             steps {
-                 cleanWs()
-            }
-         }
-
-        stage('Get last commit ID') {
-            steps {
+                cleanWs()
                 checkout scm
                 sh 'git rev-parse --short HEAD > .git/commit-id'
                 script {
                     commit_id = readFile('.git/commit-id').trim()
                 }
+                sh 'chmod 775 *'
             }
         }
 
-        stage('Scan Code Quality') {
+        stage('Test') {
+            steps {
+                  sh './mvnw test'
+            }
+        }
+
+        stage('Build') {
+            steps {
+                sh './mvnw package'
+            }
+        }
+
+        stage('SonarQube Scan Code Quality') {
             steps {
                 withSonarQubeEnv('sonarqubeIns') {
-                  sh 'mvn clean package sonar:sonar'
+                  sh './mvnw sonar:sonar'
                 }
             }
         }
 
-        stage("Quality Gate") {
+        stage("Quality Gate from SonarQube") {
             steps {
                 timeout(time: 2, unit: 'MINUTES') {
                     waitForQualityGate abortPipeline: true
@@ -44,7 +52,7 @@ pipeline {
             }
         }
 
-        stage('Docker image build') {
+        stage('Build Docker image') {
             steps {
                  script {
                     dockerImage = docker.build imageName + ":${commit_id}"
@@ -66,8 +74,6 @@ pipeline {
             steps {
                 build job: 'k8s-update-manifests-fleetman-api-gateway', parameters: [string(name: 'DOCKERTAG', value: commit_id)]
             }
-
         }
-
     }
 }
