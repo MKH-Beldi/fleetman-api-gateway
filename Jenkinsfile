@@ -31,7 +31,7 @@ pipeline {
         stage('Scan Code Quality') {
             steps {
                 withSonarQubeEnv('sonarqubeIns') {
-                  sh 'mvn clean package sonar:sonar'
+                  sh './mvnw clean org.sonarsource.scanner.maven:sonar-maven-plugin:3.9.0.2155:sonar'
                 }
             }
         }
