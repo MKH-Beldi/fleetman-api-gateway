@@ -12,7 +12,7 @@ pipeline {
 
     stages {
 
-        stage('Git operations') {
+        stage('Git Preparation') {
             steps {
                 cleanWs()
                 checkout scm
@@ -24,13 +24,13 @@ pipeline {
             }
         }
 
-        stage('Test') {
+        stage('JUnit Test') {
             steps {
                   sh './mvnw test'
             }
         }
 
-        stage('Build') {
+        stage('Build Jar') {
             steps {
                 sh './mvnw package'
             }
