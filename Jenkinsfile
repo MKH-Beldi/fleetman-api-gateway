@@ -18,7 +18,7 @@ pipeline {
              }
             steps{
                  script {
-                    registry = "nexus-registry.eastus.cloudapp.azure.com:8085/"
+                    registry = "nexus-registry.eastus.cloudapp.azure.com:8086/"
                  }
             }
         }
@@ -29,7 +29,7 @@ pipeline {
              }
             steps{
                  script {
-                    registry = "nexus-registry.eastus.cloudapp.azure.com:8087/"
+                    registry = "nexus-registry.eastus.cloudapp.azure.com:8088/"
                  }
             }
         }
