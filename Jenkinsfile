@@ -115,7 +115,7 @@ pipeline {
                 branch "feature/*"
             }
             steps {
-                build job: 'k8s-update-manifests-fleetman-api-gateway-DEV', parameters: [string(name: 'DOCKERTAG', value: commit_id)], string(name: 'BRANCHE', value: branche)]
+                build job: 'k8s-update-manifests-fleetman-api-gateway-DEV', parameters: [string(name: 'DOCKERTAG', value: commit_id), string(name: 'BRANCHE', value: branche)]
             }
         }
 
