@@ -6,12 +6,20 @@ pipeline {
     environment {
         imageName = "fleetman-api-gateway"
         registryCredentials = "nexus"
-        registry = "env.BRANCH_NAME.contains('feature') ? nexus-registry.eastus.cloudapp.azure.com:8085/ : nexus-registry.eastus.cloudapp.azure.com:8087/ "
+        registry = ''
         dockerImage = ''
-    }
-
-
     stages {
+        stage("Set environment according to branch name") {
+            steps{
+                 script {
+                     if (env.BRANCH_NAME.contains('feature')) {
+                        env.registry = "nexus-registry.eastus.cloudapp.azure.com:8085/"
+                     } else if (env.BRANCH_NAME.contains('release')) {
+                        env.registry = "nexus-registry.eastus.cloudapp.azure.com:8087/"
+                     }
+                 }
+            }
+        }
 
         stage('Git Preparation') {
             steps {
@@ -22,9 +30,7 @@ pipeline {
                     commit_id = readFile('.git/commit-id').trim()
                 }
                 sh 'chmod 775 *'
-                sh 'echo ${BRANCH_NAME}'
                 sh 'echo ${registry}'
-
             }
         }
 
