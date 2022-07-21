@@ -78,8 +78,9 @@ pipeline {
                 branch "feature*"
             }
             steps {
-                dockerImage = docker.build imageName + ":${commit_id}-dev"
-
+                script {
+                    dockerImage = docker.build imageName + ":${commit_id}-dev"
+                }
             }
         }
 
@@ -88,8 +89,9 @@ pipeline {
                 branch "release*"
             }
             steps {
-                dockerImage = docker.build imageName + ":${commit_id}-test"
-
+                script {
+                    dockerImage = docker.build imageName + ":${commit_id}-test"
+                }
             }
         }
 
