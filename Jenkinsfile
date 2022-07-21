@@ -22,7 +22,7 @@ pipeline {
                     commit_id = readFile('.git/commit-id').trim()
                 }
                 sh 'chmod 775 *'
-                sh 'echo env.BRANCH_NAME'
+                sh 'echo ${BRANCH_NAME}'
 
             }
         }
