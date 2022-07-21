@@ -8,7 +8,19 @@ pipeline {
         registryCredentials = "nexus"
         registry = ''
         dockerImage = ''
+    }
     stages {
+        stage("Set environment according to branch name") {
+            steps{
+                 script {
+                     if (env.BRANCH_NAME.contains('feature')) {
+                        env.registry = "nexus-registry.eastus.cloudapp.azure.com:8085/"
+                     } else if (env.BRANCH_NAME.contains('release')) {
+                        env.registry = "nexus-registry.eastus.cloudapp.azure.com:8087/"
+                     }
+                 }
+            }
+        }
 
         stage('Git Preparation') {
             steps {
