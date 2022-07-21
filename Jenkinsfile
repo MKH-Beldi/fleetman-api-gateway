@@ -5,8 +5,8 @@ pipeline {
     }
     environment {
         imageName = "fleetman-api-gateway"
-        registryCredentials = "nexus"
-        registry = ''
+         registry = ''
+         registryCredentials = "nexus"
         dockerImage = ''
     }
     stages {
@@ -99,8 +99,9 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry( 'http://'+registry, registryCredentials) {
-                         dockerImage.push("latest")
                          dockerImage.push()
+                         dockerImage.push("latest")
+
                     }
                 }
             }
