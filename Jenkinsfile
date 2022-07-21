@@ -21,6 +21,7 @@ pipeline {
                  }
             }
         }
+
         stage("Set environment QA") {
              when {
                 branch "release*"
@@ -28,7 +29,6 @@ pipeline {
             steps{
                  script {
                     registry = "nexus-registry.eastus.cloudapp.azure.com:8087/"
-                 }
                  }
             }
         }
