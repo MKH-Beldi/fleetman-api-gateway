@@ -16,9 +16,6 @@ pipeline {
             steps {
                 cleanWs()
                 checkout scm
-                if (env.BRANCH_NAME.contains('feature')) {
-                    sh 'git rev-parse --short HEAD > .git/commit-id'
-                }
                 sh 'git rev-parse --short HEAD > .git/commit-id'
                 script {
                     commit_id = readFile('.git/commit-id').trim()
