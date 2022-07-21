@@ -101,7 +101,10 @@ pipeline {
                     docker.withRegistry( 'http://'+registry, registryCredentials) {
                          dockerImage.push()
                          dockerImage.push("latest")
+<<<<<<< HEAD
 
+=======
+>>>>>>> 0.0.1
                     }
                 }
             }
