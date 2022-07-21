@@ -14,7 +14,7 @@ pipeline {
             steps{
                  script {
                      if (env.BRANCH_NAME.contains('feature')) {
-                        registry = "nexus-registry.eastus.cloudapp.azure.com:8085/"
+                        registry = "nexus-registry.eastus.cloudapp.azure.com:8089/"
                      } else if (env.BRANCH_NAME.contains('release')) {
                         registry = "nexus-registry.eastus.cloudapp.azure.com:8087/"
                      }
