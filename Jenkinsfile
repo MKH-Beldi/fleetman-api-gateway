@@ -10,14 +10,14 @@ pipeline {
         dockerImage = ''
     }
     stages {
-        stage("Set environment according to branch name") {
+
+        stage("Set environment Develop") {
+             when {
+                env.BRANCH_NAME.contains('feature')
+             }
             steps{
                  script {
-                     if (env.BRANCH_NAME.contains('feature')) {
-                        registry = "nexus-registry.eastus.cloudapp.azure.com:8085/"
-                     } else if (env.BRANCH_NAME.contains('release')) {
-                        registry = "nexus-registry.eastus.cloudapp.azure.com:8087/"
-                     }
+                    registry = "nexus-registry.eastus.cloudapp.azure.com:8085/"
                  }
             }
         }
@@ -34,7 +34,7 @@ pipeline {
             }
         }
 
-        stage('JUnit Test') {
+        stage('JUnit Tests') {
             steps {
                   sh './mvnw test'
             }
@@ -65,7 +65,13 @@ pipeline {
         stage('Build Docker image') {
             steps {
                  script {
-                    dockerImage = docker.build imageName + ":${commit_id}"
+                    script {
+                        if (env.BRANCH_NAME.contains('feature')) {
+                            dockerImage = docker.build imageName + ":${commit_id}-dev"
+                        } else if (env.BRANCH_NAME.contains('release')) {
+                            dockerImage = docker.build imageName + ":${commit_id}-test"
+                        }
+                    }
                  }
             }
         }
