@@ -8,7 +8,7 @@ pipeline {
          registry = ''
          registryCredentials = "nexus"
          dockerImage = ''
-         env_git = ${env.BRANCH_NAME}
+
     }
     stages {
 
@@ -114,7 +114,7 @@ pipeline {
                 branch "feature/*"
             }
             steps {
-                build job: 'k8s-update-manifests-fleetman-api-gateway-DEV', parameters: [string(name: 'DOCKERTAG', value: commit_id)], [string(name: 'ENV_GIT', value: env_git)]
+                build job: 'k8s-update-manifests-fleetman-api-gateway-DEV', parameters: [string(name: 'DOCKERTAG', value: commit_id)], [string(name: 'BRANCHE', value: BRANCH_NAME)]
             }
         }
 
@@ -123,7 +123,7 @@ pipeline {
                 branch "release/*"
             }
             steps {
-                build job: 'k8s-update-manifests-fleetman-api-gateway-QA', parameters: [string(name: 'DOCKERTAG', value: commit_id)], [string(name: 'ENV_GIT', value: env_git)]
+                build job: 'k8s-update-manifests-fleetman-api-gateway-QA', parameters: [string(name: 'DOCKERTAG', value: commit_id)], [string(name: 'BRANCHE', value: BRANCH_NAME)]
             }
         }
     }
