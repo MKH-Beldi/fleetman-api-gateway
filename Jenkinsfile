@@ -41,7 +41,7 @@ pipeline {
                 sh 'git rev-parse --short HEAD > .git/commit-id'
                 script {
                     commit_id = readFile('.git/commit-id').trim()
-                    branche = env.BRANCH_NAME
+                    branch_git = env.BRANCH_NAME
                 }
                 sh 'chmod 775 *'
             }
@@ -115,7 +115,7 @@ pipeline {
                 branch "feature/*"
             }
             steps {
-                build job: 'k8s-update-manifests-fleetman-api-gateway-DEV', parameters: [string(name: 'DOCKERTAG', value: commit_id), string(name: 'BRANCHE', value: branche)]
+                build job: 'k8s-update-manifests-fleetman-api-gateway-DEV', parameters: [string(name: 'DOCKERTAG', value: commit_id), string(name: 'BRANCHE', value: branch_git)]
             }
         }
 
@@ -124,7 +124,7 @@ pipeline {
                 branch "release/*"
             }
             steps {
-                build job: 'k8s-update-manifests-fleetman-api-gateway-QA', parameters: [string(name: 'DOCKERTAG', value: commit_id), string(name: 'BRANCHE', value: branche)]
+                build job: 'k8s-update-manifests-fleetman-api-gateway-QA', parameters: [string(name: 'DOCKERTAG', value: commit_id), string(name: 'BRANCHE', value: branch_git)]
             }
         }
     }
