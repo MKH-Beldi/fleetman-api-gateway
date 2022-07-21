@@ -13,11 +13,22 @@ pipeline {
 
         stage("Set environment Develop") {
              when {
-                env.BRANCH_NAME.contains('feature')
+                branch "feature*"
              }
             steps{
                  script {
                     registry = "nexus-registry.eastus.cloudapp.azure.com:8085/"
+                 }
+            }
+        }
+        stage("Set environment QA") {
+             when {
+                branch "release*"
+             }
+            steps{
+                 script {
+                    registry = "nexus-registry.eastus.cloudapp.azure.com:8087/"
+                 }
                  }
             }
         }
@@ -62,17 +73,23 @@ pipeline {
             }
         }
 
-        stage('Build Docker image') {
+        stage('Build Docker image environment Develop') {
+            when {
+                branch "feature*"
+            }
             steps {
-                 script {
-                    script {
-                        if (env.BRANCH_NAME.contains('feature')) {
-                            dockerImage = docker.build imageName + ":${commit_id}-dev"
-                        } else if (env.BRANCH_NAME.contains('release')) {
-                            dockerImage = docker.build imageName + ":${commit_id}-test"
-                        }
-                    }
-                 }
+                dockerImage = docker.build imageName + ":${commit_id}-dev"
+
+            }
+        }
+
+        stage('Build Docker image environment QA') {
+            when {
+                branch "release*"
+            }
+            steps {
+                dockerImage = docker.build imageName + ":${commit_id}-test"
+
             }
         }
 
@@ -86,15 +103,22 @@ pipeline {
                 }
             }
         }
-        stage('Trigger K8S Manifest Updating') {
+
+        stage('Trigger K8S Manifest Updating environment Develop') {
+            when {
+                branch "feature*"
+            }
             steps {
-                script {
-                    if (env.BRANCH_NAME.contains('feature')) {
-                        build job: 'k8s-update-manifests-fleetman-api-gateway-DEV', parameters: [string(name: 'DOCKERTAG', value: commit_id)]
-                    } else if (env.BRANCH_NAME.contains('release')) {
-                        build job: 'k8s-update-manifests-fleetman-api-gateway-QA', parameters: [string(name: 'DOCKERTAG', value: commit_id)]
-                    }
-                }
+                build job: 'k8s-update-manifests-fleetman-api-gateway-DEV', parameters: [string(name: 'DOCKERTAG', value: commit_id)]
+            }
+        }
+
+        stage('Trigger K8S Manifest Updating environment QA') {
+            when {
+                branch "feature*"
+            }
+            steps {
+                build job: 'k8s-update-manifests-fleetman-api-gateway-QA', parameters: [string(name: 'DOCKERTAG', value: commit_id)]
             }
         }
     }
