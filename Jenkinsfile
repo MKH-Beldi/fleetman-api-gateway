@@ -14,7 +14,7 @@ pipeline {
             steps{
                  script {
                      if (env.BRANCH_NAME.contains('feature')) {
-                        registry = "nexus-registry.eastus.cloudapp.azure.com:8089/"
+                        registry = "nexus-registry.eastus.cloudapp.azure.com:8085/"
                      } else if (env.BRANCH_NAME.contains('release')) {
                         registry = "nexus-registry.eastus.cloudapp.azure.com:8087/"
                      }
@@ -31,7 +31,6 @@ pipeline {
                     commit_id = readFile('.git/commit-id').trim()
                 }
                 sh 'chmod 775 *'
-                sh 'printenv'
             }
         }
 
@@ -83,7 +82,13 @@ pipeline {
         }
         stage('Trigger K8S Manifest Updating') {
             steps {
-                build job: 'k8s-update-manifests-fleetman-api-gateway', parameters: [string(name: 'DOCKERTAG', value: commit_id)]
+                script {
+                    if (env.BRANCH_NAME.contains('feature')) {
+                        build job: 'k8s-update-manifests-fleetman-api-gateway-DEV', parameters: [string(name: 'DOCKERTAG', value: commit_id)]
+                    } else if (env.BRANCH_NAME.contains('release')) {
+                        build job: 'k8s-update-manifests-fleetman-api-gateway-QA', parameters: [string(name: 'DOCKERTAG', value: commit_id)]
+                    }
+                }
             }
         }
     }
