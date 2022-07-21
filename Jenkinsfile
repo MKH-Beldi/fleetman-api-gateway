@@ -99,12 +99,9 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry( 'http://'+registry, registryCredentials) {
-                         dockerImage.push()
                          dockerImage.push("latest")
-<<<<<<< HEAD
+                         dockerImage.push()
 
-=======
->>>>>>> 0.0.1
                     }
                 }
             }
