@@ -6,7 +6,6 @@ pipeline {
     environment {
         imageName = "fleetman-api-gateway"
         registryCredentials = "nexus"
-        script
         registry = "env.BRANCH_NAME.contains('feature') ? nexus-registry.eastus.cloudapp.azure.com:8085/ : nexus-registry.eastus.cloudapp.azure.com:8087/ "
         dockerImage = ''
     }
