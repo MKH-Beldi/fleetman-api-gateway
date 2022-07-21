@@ -113,7 +113,7 @@ pipeline {
                 branch "feature/*"
             }
             steps {
-                build job: 'k8s-update-manifests-fleetman-api-gateway-DEV', parameters: [string(name: 'DOCKERTAG', value: commit_id)], [string(name: 'ENV_GIT', value: env.BRANCH_NAME)]
+                build job: 'k8s-update-manifests-fleetman-api-gateway-DEV', parameters: [string(name: 'DOCKERTAG', value: commit_id)], [string(name: 'ENV_GIT', value: ${env.BRANCH_NAME})]
             }
         }
 
@@ -122,7 +122,7 @@ pipeline {
                 branch "release/*"
             }
             steps {
-                build job: 'k8s-update-manifests-fleetman-api-gateway-QA', parameters: [string(name: 'DOCKERTAG', value: commit_id)], [string(name: 'ENV_GIT', value: env.BRANCH_NAME)]
+                build job: 'k8s-update-manifests-fleetman-api-gateway-QA', parameters: [string(name: 'DOCKERTAG', value: commit_id)], [string(name: 'ENV_GIT', value: ${env.BRANCH_NAME})]
             }
         }
     }
