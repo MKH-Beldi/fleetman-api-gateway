@@ -5,8 +5,8 @@ pipeline {
     }
     environment {
         imageName = "fleetman-api-gateway"
-        registryCredentials = "nexus"
-        registry = ''
+         registry = ''
+         registryCredentials = "nexus"
         dockerImage = ''
     }
     stages {
