@@ -31,7 +31,7 @@ pipeline {
                     commit_id = readFile('.git/commit-id').trim()
                 }
                 sh 'chmod 775 *'
-                sh 'echo ${registry}'
+                sh 'echo ${env.registry}'
             }
         }
 
