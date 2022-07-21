@@ -13,7 +13,7 @@ pipeline {
 
         stage("Set environment Develop") {
              when {
-                branch "feature*"
+                branch "feature/*"
              }
             steps{
                  script {
@@ -24,7 +24,7 @@ pipeline {
 
         stage("Set environment QA") {
              when {
-                branch "release*"
+                branch "release/*"
              }
             steps{
                  script {
@@ -75,7 +75,7 @@ pipeline {
 
         stage('Build Docker image environment Develop') {
             when {
-                branch "feature*"
+                branch "feature/*"
             }
             steps {
                 script {
@@ -86,7 +86,7 @@ pipeline {
 
         stage('Build Docker image environment QA') {
             when {
-                branch "release*"
+                branch "release/*"
             }
             steps {
                 script {
@@ -108,7 +108,7 @@ pipeline {
 
         stage('Trigger K8S Manifest Updating environment Develop') {
             when {
-                branch "feature*"
+                branch "feature/*"
             }
             steps {
                 build job: 'k8s-update-manifests-fleetman-api-gateway-DEV', parameters: [string(name: 'DOCKERTAG', value: commit_id)]
@@ -117,7 +117,7 @@ pipeline {
 
         stage('Trigger K8S Manifest Updating environment QA') {
             when {
-                branch "feature*"
+                branch "release/*"
             }
             steps {
                 build job: 'k8s-update-manifests-fleetman-api-gateway-QA', parameters: [string(name: 'DOCKERTAG', value: commit_id)]
