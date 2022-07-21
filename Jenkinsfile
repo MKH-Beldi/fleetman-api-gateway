@@ -16,11 +16,13 @@ pipeline {
             steps {
                 cleanWs()
                 checkout scm
+                sh 'printenv'
                 sh 'git rev-parse --short HEAD > .git/commit-id'
                 script {
                     commit_id = readFile('.git/commit-id').trim()
                 }
                 sh 'chmod 775 *'
+
             }
         }
 
