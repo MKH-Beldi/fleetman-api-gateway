@@ -23,6 +23,7 @@ pipeline {
                 }
                 sh 'chmod 775 *'
                 sh 'echo ${BRANCH_NAME}'
+                sh 'echo ${registry}'
 
             }
         }
