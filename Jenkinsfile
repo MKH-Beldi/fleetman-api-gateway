@@ -5,12 +5,10 @@ pipeline {
     }
     environment {
         imageName = "fleetman-api-gateway"
+         registry = ''
          registryCredentials = "nexus"
          dockerImage = ''
-<<<<<<< HEAD
 
-=======
->>>>>>> 0.0.2
     }
     stages {
 
@@ -31,7 +29,7 @@ pipeline {
              }
             steps{
                  script {
-                    registry = "nexus-registry.eastus.cloudapp.azure.com:8088/"
+                    registry = "nexus-registry.eastus.cloudapp.azure.com:8087/"
                  }
             }
         }
@@ -129,4 +127,3 @@ pipeline {
         }
     }
 }
-
