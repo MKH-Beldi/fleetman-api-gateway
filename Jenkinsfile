@@ -6,19 +6,37 @@ pipeline {
     environment {
         imageName = "fleetman-api-gateway"
         registryCredentials = "nexus"
-        registry = "nexus-registry.eastus.cloudapp.azure.com:8085/"
+        registry = ''
         dockerImage = ''
     }
-
     stages {
+
+        stage("Set environment Develop") {
+             when {
+                branch "feature/*"
+             }
+            steps{
+                 script {
+                    registry = "nexus-registry.eastus.cloudapp.azure.com:8085/"
+                 }
+            }
+        }
+
+        stage("Set environment QA") {
+             when {
+                branch "release/*"
+             }
+            steps{
+                 script {
+                    registry = "nexus-registry.eastus.cloudapp.azure.com:8087/"
+                 }
+            }
+        }
 
         stage('Git Preparation') {
             steps {
                 cleanWs()
                 checkout scm
-                if (env.BRANCH_NAME.contains('feature')) {
-                    sh 'git rev-parse --short HEAD > .git/commit-id'
-                }
                 sh 'git rev-parse --short HEAD > .git/commit-id'
                 script {
                     commit_id = readFile('.git/commit-id').trim()
@@ -27,7 +45,7 @@ pipeline {
             }
         }
 
-        stage('JUnit Test') {
+        stage('JUnit Tests') {
             steps {
                   sh './mvnw test'
             }
@@ -55,11 +73,25 @@ pipeline {
             }
         }
 
-        stage('Build Docker image') {
+        stage('Build Docker image environment Develop') {
+            when {
+                branch "feature/*"
+            }
             steps {
-                 script {
-                    dockerImage = docker.build imageName + ":${commit_id}"
-                 }
+                script {
+                    dockerImage = docker.build imageName + ":${commit_id}-dev"
+                }
+            }
+        }
+
+        stage('Build Docker image environment QA') {
+            when {
+                branch "release/*"
+            }
+            steps {
+                script {
+                    dockerImage = docker.build imageName + ":${commit_id}-test"
+                }
             }
         }
 
@@ -67,16 +99,30 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry( 'http://'+registry, registryCredentials) {
-                        dockerImage.push("latest")
-                        dockerImage.push()
+                         dockerImage.push("latest")
+                         dockerImage.push()
                     }
                 }
             }
         }
-        stage('Trigger K8S Manifest Updating') {
+
+        stage('Trigger K8S Manifest Updating environment Develop') {
+            when {
+                branch "feature/*"
+            }
             steps {
-                build job: 'k8s-update-manifests-fleetman-api-gateway', parameters: [string(name: 'DOCKERTAG', value: commit_id)]
+                build job: 'k8s-update-manifests-fleetman-api-gateway-DEV', parameters: [string(name: 'DOCKERTAG', value: commit_id)]
+            }
+        }
+
+        stage('Trigger K8S Manifest Updating environment QA') {
+            when {
+                branch "release/*"
+            }
+            steps {
+                build job: 'k8s-update-manifests-fleetman-api-gateway-QA', parameters: [string(name: 'DOCKERTAG', value: commit_id)]
             }
         }
     }
 }
+
