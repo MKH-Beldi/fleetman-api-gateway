@@ -8,7 +8,7 @@ pipeline {
          registry = ''
          registryCredentials = "nexus"
          dockerImage = ''
-         env_git = env.BRANCH_NAME
+         env_git = ${env.BRANCH_NAME}
     }
     stages {
 
