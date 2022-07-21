@@ -7,7 +7,8 @@ pipeline {
         imageName = "fleetman-api-gateway"
          registry = ''
          registryCredentials = "nexus"
-        dockerImage = ''
+         dockerImage = ''
+
     }
     stages {
 
@@ -40,6 +41,7 @@ pipeline {
                 sh 'git rev-parse --short HEAD > .git/commit-id'
                 script {
                     commit_id = readFile('.git/commit-id').trim()
+                    branch_git = env.BRANCH_NAME
                 }
                 sh 'chmod 775 *'
             }
@@ -98,11 +100,9 @@ pipeline {
         stage('Push Docker image to Nexus Registry') {
             steps {
                 script {
-                    docker.withRegistry( 'http://'+registry, registryCredentials) {
+                    docker.withRegistry( 'https://'+registry, registryCredentials) {
                          dockerImage.push()
                          dockerImage.push("latest")
-
-
                     }
                 }
             }
@@ -113,7 +113,7 @@ pipeline {
                 branch "feature/*"
             }
             steps {
-                build job: 'k8s-update-manifests-fleetman-api-gateway-DEV', parameters: [string(name: 'DOCKERTAG', value: commit_id)]
+                build job: 'k8s-update-manifests-fleetman-api-gateway-DEV', parameters: [string(name: 'DOCKERTAG', value: commit_id), string(name: 'BRANCH_GIT', value: branch_git)]
             }
         }
 
@@ -122,7 +122,7 @@ pipeline {
                 branch "release/*"
             }
             steps {
-                build job: 'k8s-update-manifests-fleetman-api-gateway-QA', parameters: [string(name: 'DOCKERTAG', value: commit_id)]
+                build job: 'k8s-update-manifests-fleetman-api-gateway-QA', parameters: [string(name: 'DOCKERTAG', value: commit_id), string(name: 'BRANCH_GIT', value: branch_git)]
             }
         }
     }
