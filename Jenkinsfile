@@ -103,6 +103,7 @@ pipeline {
                     docker.withRegistry( 'https://'+registry, registryCredentials) {
                          dockerImage.push()
                          dockerImage.push("latest")
+
                     }
                 }
             }
