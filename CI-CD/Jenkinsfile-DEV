@@ -71,7 +71,6 @@ pipeline {
                     docker.withRegistry( 'https://'+registry, registryCredentials) {
                          dockerImage.push("latest")
                          dockerImage.push()
-
                     }
                 }
             }
