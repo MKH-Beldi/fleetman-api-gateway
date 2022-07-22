@@ -58,9 +58,6 @@ pipeline {
         }
 
         stage('Build Docker image') {
-            when {
-                branch "feature/*"
-            }
             steps {
                 script {
                     dockerImage = docker.build imageName + ":${commit_id}-dev"
@@ -72,17 +69,15 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry( 'https://'+registry, registryCredentials) {
-                         dockerImage.push()
                          dockerImage.push("latest")
+                         dockerImage.push()
+
                     }
                 }
             }
         }
 
-        stage('Trigger K8S Manifest Updating environment Develop') {
-            when {
-                branch "feature/*"
-            }
+        stage('Trigger K8S Manifest Updating') {
             steps {
                 build job: 'k8s-update-manifests-fleetman-api-gateway-DEV', parameters: [string(name: 'DOCKERTAG', value: commit_id), string(name: 'BRANCH_GIT', value: branch_git)]
             }
